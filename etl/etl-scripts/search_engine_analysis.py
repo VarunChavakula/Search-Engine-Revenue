@@ -24,13 +24,14 @@ except KeyError as key_error:
 
 BUCKET = "s3://aws-glue-search-engine-revenue/"
 OUTPUT = "_SearchKeywordPerformance"
+spark = SparkSession.builder.appName("Python Spark SQL basic example")\
+    .config("spark.some.config.option", "some-value").getOrCreate()
+
 def main():
     """
     This function reads data from s3, hashes and performs few transformations on it.
     """
-    spark = SparkSession.builder.appName("Python Spark SQL basic example")\
-        .config("spark.some.config.option", "some-value").getOrCreate()
-    df_source = spark.read.csv('data.tsv', sep=r'\t', header=True)
+    df_source = spark.read.csv(BUCKET + INPUT, sep=r'\t', header=True)
     df_source.createOrReplaceTempView("hits")
     transformation()
     
@@ -83,3 +84,4 @@ def transformation():
 
 if __name__ == '__main__':
     main()
+    
